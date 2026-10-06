@@ -165,7 +165,7 @@ HTML
     emulators.pathPrefix = "https://v7.js-dos.com/build/releases/latest/js-dos/";
     
     Dos(document.getElementById("game-container"), { style: "none" })
-      .run("jetpack.zip")
+      .run("jetpack.zip", "JETPACK.EXE")
       .then((ci) => {
         dosInstance = ci;
 
