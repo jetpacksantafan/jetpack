@@ -167,9 +167,9 @@ HTML
     Dos(document.getElementById("game-container"), { 
   style: "none"
 })
-  .run("jetpack.zip", ["JETPACK.EXE"])
-      .then((ci) => {
-        dosInstance = ci;
+  .run("jetpack.zip", { exec: ["JETPACK.EXE"] })
+  .then((ci) => {
+    dosInstance = ci;
 
         function bindTouchKey(elementId, keyCodes) {
           const el = document.getElementById(elementId);
