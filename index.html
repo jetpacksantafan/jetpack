@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
   <title>Jetpack Christmas</title>
+
   <script src="./js-dos.js"></script>
+
   <style>
     html, body {
       margin: 0;
@@ -14,6 +16,7 @@
       background-color: #000;
       overflow: hidden;
     }
+
     #canvas-container {
       width: 100vw;
       height: 100vh;
@@ -21,12 +24,15 @@
       align-items: center;
       justify-content: center;
     }
+
     canvas {
       width: 100%;
       height: 100%;
+      display: block;
     }
   </style>
 </head>
+
 <body>
 
   <div id="canvas-container">
@@ -34,15 +40,21 @@
   </div>
 
   <script>
-    let dosInstance = null;
-
     Dos(document.getElementById("jsdos-canvas"), {
-      wdosboxUrl: "./wdosbox.js"
-    }).ready((calculator, wdos) => {
-      calculator.run("./jetpack.jsdos", "JETPACK.EXE").then((ci) => {
-        dosInstance = ci;
+      wdosboxUrl: "./wdosbox.js",
+      cycles: "auto"
+    }).ready((fs, main) => {
+
+      fs.extract("./jetpack.jsdos").then(() => {
+
+        main(["-c", "JETPACK.EXE"]).then((ci) => {
+          window.dosInstance = ci;
+        });
+
       });
+
     });
   </script>
+
 </body>
 </html>
