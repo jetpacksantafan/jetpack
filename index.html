@@ -165,9 +165,10 @@ HTML
     emulators.pathPrefix = "https://v7.js-dos.com/build/releases/latest/js-dos/";
     
     Dos(document.getElementById("game-container"), { style: "none" })
-  .run("jetpack.zip", ["-c", "JETPACK.EXE"])
+  .run("jetpack.jsdos")
   .then((ci) => {
     dosInstance = ci;
+  });
 
         function bindTouchKey(elementId, keyCodes) {
           const el = document.getElementById(elementId);
