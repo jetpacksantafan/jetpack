@@ -7,9 +7,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Jetpack Christmas</title>
 
-  <!-- JS-DOS v6 Engine with explicit CDN pathing to prevent CORS hanging -->
-  <script src="https://cdn.jsdelivr.net/npm/js-dos@6.22.6/dist/js-dos.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/js-dos@6.22.6/dist/js-dos.css">
+  <!-- Local JS-DOS v6 Assets -->
+  <link rel="stylesheet" href="js-dos.css">
+  <script src="js-dos.js"></script>
 
   <style>
     * {
@@ -58,7 +58,6 @@
       gap: 10px;
     }
 
-    /* Button Styling */
     .btn {
       background: rgba(255, 255, 255, 0.25);
       border: 2px solid rgba(255, 255, 255, 0.5);
@@ -76,7 +75,6 @@
       transform: scale(0.95);
     }
 
-    /* D-PAD Layout */
     .dpad {
       display: grid;
       grid-template-columns: repeat(3, 55px);
@@ -92,7 +90,6 @@
     .dpad-right { grid-column: 3; grid-row: 2; }
     .dpad-down  { grid-column: 2; grid-row: 3; }
 
-    /* Action Buttons */
     .actions {
       display: flex;
       gap: 15px;
@@ -126,7 +123,6 @@
 
   <div id="game-container"></div>
 
-  <!-- Touch Controls Overlay -->
   <div id="touch-overlay">
     <div class="control-group dpad">
       <div class="btn dpad-up" id="btn-up">▲</div>
@@ -146,8 +142,8 @@
   <script>
     let dosInstance = null;
 
-    // Point DosBox directly to jsDelivr CDN to guarantee wdosbox.js loads without CORS issues
-    Dos.wdosboxUrl = "https://cdn.jsdelivr.net/npm/js-dos@6.22.6/dist/wdosbox.js";
+    // Direct JS-DOS v6 to use your local wdosbox.js file from the repo root
+    Dos.wdosboxUrl = "wdosbox.js";
 
     const KEYS = {
       UP: 38,
@@ -160,16 +156,15 @@
       CTRL: 17
     };
 
-    // Load jetpack.jsdos as binary ArrayBuffer to bypass server download headers
+    // Load jetpack.jsdos as a local Blob
     fetch("jetpack.jsdos")
-      .then(res => {
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        return res.arrayBuffer();
+      .then(response => {
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        return response.blob();
       })
-      .then(buffer => {
-        const blob = new Blob([buffer], { type: "application/octet-stream" });
+      .then(blob => {
         const fileUrl = URL.createObjectURL(blob);
-
+        
         Dos(document.getElementById("game-container"), {
           onFragment: (location) => {}
         }).ready((calculator, wdos) => {
@@ -179,7 +174,7 @@
         });
       })
       .catch(err => {
-        console.error("Game load failed:", err);
+        alert("Error loading game archive: " + err.message);
       });
 
     function bindTouchKey(elementId, keyCodes) {
