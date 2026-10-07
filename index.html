@@ -7,9 +7,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Jetpack Christmas</title>
 
-  <!-- JS-DOS v6 via CDNJS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/js-dos/6.22.6/js-dos.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-dos/6.22.6/js-dos.js"></script>
+  <!-- Local Engine Files -->
+  <link rel="stylesheet" href="js-dos.css">
+  <script src="js-dos.js"></script>
 
   <style>
     * {
@@ -75,6 +75,7 @@
       transform: scale(0.95);
     }
 
+    /* D-PAD */
     .dpad {
       display: grid;
       grid-template-columns: repeat(3, 55px);
@@ -90,6 +91,7 @@
     .dpad-right { grid-column: 3; grid-row: 2; }
     .dpad-down  { grid-column: 2; grid-row: 3; }
 
+    /* Actions */
     .actions {
       display: flex;
       gap: 15px;
@@ -123,6 +125,7 @@
 
   <div id="game-container"></div>
 
+  <!-- Touch Overlay -->
   <div id="touch-overlay">
     <div class="control-group dpad">
       <div class="btn dpad-up" id="btn-up">▲</div>
@@ -142,38 +145,40 @@
   <script>
     let dosInstance = null;
 
-    // Direct WebAssembly engine URL through CDNJS with permissive CORS
-    Dos.wdosboxUrl = "https://cdnjs.cloudflare.com/ajax/libs/js-dos/6.22.6/wdosbox.js";
+    // Tells js-dos to use the local wdosbox.js file inside your repo
+    Dos.wdosboxUrl = "wdosbox.js";
 
     const KEYS = {
       UP: 38,
       DOWN: 40,
       LEFT: 37,
       RIGHT: 39,
-      SPACE: 32,
-      S: 83,
-      ENTER: 13,
-      CTRL: 17
+      SPACE: 32,  // Jetpack
+      S: 83,      // "S" Key (Start)
+      ENTER: 13,  // Enter Key
+      CTRL: 17    // Phase Shield
     };
 
+    // Load game archive directly as in-memory blob
     fetch("jetpack.jsdos")
       .then(response => {
-        if (!response.ok) throw new Error("HTTP " + response.status);
-        return response.blob();
+        if (!response.ok) throw new Error("HTTP " + response.status + " - File missing");
+        return response.arrayBuffer();
       })
-      .then(blob => {
-        const fileUrl = URL.createObjectURL(blob);
-        
+      .then(buffer => {
+        const blob = new Blob([buffer], { type: "application/octet-stream" });
+        const localBlobUrl = URL.createObjectURL(blob);
+
         Dos(document.getElementById("game-container"), {
           onFragment: (location) => {}
         }).ready((calculator, wdos) => {
-          calculator.run(fileUrl, "JETPACK.EXE").then((ci) => {
+          calculator.run(localBlobUrl, "JETPACK.EXE").then((ci) => {
             dosInstance = ci;
           });
         });
       })
       .catch(err => {
-        alert("Error loading game file: " + err.message);
+        alert("Launch Error: " + err.message);
       });
 
     function bindTouchKey(elementId, keyCodes) {
