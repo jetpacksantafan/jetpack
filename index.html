@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
   <title>Jetpack Christmas</title>
-  <script src="js-dos.js"></script>
+  <script src="./js-dos.js"></script>
   <style>
     html, body {
       margin: 0;
@@ -39,7 +39,7 @@
     Dos(document.getElementById("jsdos-canvas"), {
       wdosboxUrl: "./wdosbox.js"
     }).ready((calculator, wdos) => {
-      calculator.run("jetpack.jsdos", "JETPACK.EXE").then((ci) => {
+      calculator.run("./jetpack.jsdos", "JETPACK.EXE").then((ci) => {
         dosInstance = ci;
       });
     });
