@@ -7,9 +7,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Jetpack Christmas</title>
 
-  <!-- Local JS-DOS v6 Assets -->
-  <link rel="stylesheet" href="js-dos.css">
-  <script src="js-dos.js"></script>
+  <!-- JS-DOS v6 via CDNJS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/js-dos/6.22.6/js-dos.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-dos/6.22.6/js-dos.js"></script>
 
   <style>
     * {
@@ -142,8 +142,8 @@
   <script>
     let dosInstance = null;
 
-    // Direct JS-DOS v6 to use your local wdosbox.js file from the repo root
-    Dos.wdosboxUrl = "wdosbox.js";
+    // Direct WebAssembly engine URL through CDNJS with permissive CORS
+    Dos.wdosboxUrl = "https://cdnjs.cloudflare.com/ajax/libs/js-dos/6.22.6/wdosbox.js";
 
     const KEYS = {
       UP: 38,
@@ -156,7 +156,6 @@
       CTRL: 17
     };
 
-    // Load jetpack.jsdos as a local Blob
     fetch("jetpack.jsdos")
       .then(response => {
         if (!response.ok) throw new Error("HTTP " + response.status);
@@ -174,7 +173,7 @@
         });
       })
       .catch(err => {
-        alert("Error loading game archive: " + err.message);
+        alert("Error loading game file: " + err.message);
       });
 
     function bindTouchKey(elementId, keyCodes) {
