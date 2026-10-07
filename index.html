@@ -8,7 +8,7 @@
   <title>Jetpack Christmas</title>
 
   <!-- Verified CDNJS js-dos v6 Release -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-dos/6.22.60/js-dos.js"></script>
+  <script src="js-dos.js"></script>
 
   <style>
     * {
@@ -159,10 +159,10 @@
     };
 
     Dos(document.getElementById("game-container"), {
-      wdosboxUrl: "https://cdnjs.cloudflare.com/ajax/libs/js-dos/6.22.60/wdosbox.js"
-    }).ready((calculator, wdos) => {
-      calculator.run("jetpack.jsdos", "JETPACK.EXE").then((ci) => {
-        dosInstance = ci;
+  wdosboxUrl: "wdosbox.js"
+}).ready((calculator, wdos) => {
+  calculator.run("jetpack.jsdos", "JETPACK.EXE").then((ci) => {
+    dosInstance = ci;
       });
     });
 
