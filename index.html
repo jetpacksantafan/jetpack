@@ -160,14 +160,26 @@
       CTRL: 17    // Phase Shield
     };
 
-    // JS-DOS v6 Explicit Runner
-    Dos(document.getElementById("game-container"), {
-      onFragment: (location) => {}
-    }).ready((calculator, wdos) => {
-      calculator.run("jetpack.jsdos", "JETPACK.EXE").then((ci) => {
-        dosInstance = ci;
+    // Fetch jetpack.jsdos into memory as a Blob to bypass GitHub Pages download restrictions
+    fetch("jetpack.jsdos")
+      .then(response => {
+        if (!response.ok) throw new Error("HTTP error " + response.status);
+        return response.blob();
+      })
+      .then(blob => {
+        const fileUrl = URL.createObjectURL(blob);
+        
+        Dos(document.getElementById("game-container"), {
+          onFragment: (location) => {}
+        }).ready((calculator, wdos) => {
+          calculator.run(fileUrl, "JETPACK.EXE").then((ci) => {
+            dosInstance = ci;
+          });
+        });
+      })
+      .catch(err => {
+        alert("Failed to load game file: " + err.message);
       });
-    });
 
     function bindTouchKey(elementId, keyCodes) {
       const el = document.getElementById(elementId);
