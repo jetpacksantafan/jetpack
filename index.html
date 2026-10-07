@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Jetpack Christmas</title>
+  <title>Jetpack Christmas - Test</title>
 
   <script src="./js-dos.js"></script>
 
@@ -31,16 +31,14 @@
   <canvas id="jsdos-canvas"></canvas>
 
   <script>
-    let dosInstance = null;
-
     Dos(document.getElementById("jsdos-canvas"), {
       wdosboxUrl: "./wdosbox.js"
     }).ready((fs, main) => {
 
       fs.extract("./jetpack.jsdos").then(() => {
 
-        main(["-c", "JETPACK.EXE"]).then((ci) => {
-          dosInstance = ci;
+        main(["-c", "COMMAND.COM"]).then((ci) => {
+          window.dosInstance = ci;
         });
 
       });
