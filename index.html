@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Jetpack Christmas - Test</title>
+  <title>Jetpack Christmas - Diagnostic</title>
 
   <script src="./js-dos.js"></script>
 
@@ -14,14 +14,31 @@
       height: 100%;
       margin: 0;
       padding: 0;
-      overflow: hidden;
       background: #000;
+      overflow: hidden;
+      color: #fff;
+      font-family: monospace;
     }
 
     #jsdos-canvas {
       width: 100%;
       height: 100%;
       display: block;
+    }
+
+    #log {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      max-height: 40%;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.9);
+      color: #00ff00;
+      padding: 10px;
+      font-size: 13px;
+      z-index: 9999;
+      white-space: pre-wrap;
     }
   </style>
 </head>
@@ -30,20 +47,66 @@
 
   <canvas id="jsdos-canvas"></canvas>
 
+  <div id="log">Starting...</div>
+
   <script>
-    Dos(document.getElementById("jsdos-canvas"), {
-      wdosboxUrl: "./wdosbox.js"
-    }).ready((fs, main) => {
+    const log = document.getElementById("log");
 
-      fs.extract("./jetpack.jsdos").then(() => {
+    function writeLog(message) {
+      log.textContent += "\n" + message;
+      log.scrollTop = log.scrollHeight;
+    }
 
-        main(["-c", "COMMAND.COM"]).then((ci) => {
-          window.dosInstance = ci;
-        });
+    window.addEventListener("error", function(event) {
+      writeLog("JAVASCRIPT ERROR:");
+      writeLog(event.message);
+    });
+
+    window.addEventListener("unhandledrejection", function(event) {
+      writeLog("PROMISE ERROR:");
+      writeLog(String(event.reason));
+    });
+
+    writeLog("Loading js-dos...");
+
+    try {
+      Dos(document.getElementById("jsdos-canvas"), {
+        wdosboxUrl: "./wdosbox.js"
+      }).ready((fs, main) => {
+
+        writeLog("DOSBox initialized.");
+        writeLog("Extracting jetpack.jsdos...");
+
+        fs.extract("./jetpack.jsdos")
+          .then(() => {
+
+            writeLog("Extraction completed.");
+            writeLog("Starting COMMAND.COM...");
+
+            return main(["-c", "COMMAND.COM"]);
+
+          })
+          .then((ci) => {
+
+            window.dosInstance = ci;
+            writeLog("DOSBox command started.");
+
+          })
+          .catch((error) => {
+
+            writeLog("STARTUP ERROR:");
+            writeLog(String(error));
+
+          });
 
       });
 
-    });
+    } catch (error) {
+
+      writeLog("INITIALIZATION ERROR:");
+      writeLog(String(error));
+
+    }
   </script>
 
 </body>
