@@ -71,25 +71,25 @@
 
     try {
       Dos(document.getElementById("jsdos-canvas"), {
-        wdosboxUrl: "./wdosbox.js"
+        wdosboxUrl: "./dosbox.js"
       }).ready((fs, main) => {
 
         writeLog("DOSBox initialized.");
-        writeLog("Extracting jetpack.jsdos...");
+        writeLog("Extracting Jetpack...");
 
         fs.extract("./jetpack.jsdos")
           .then(() => {
 
             writeLog("Extraction completed.");
-            writeLog("Starting COMMAND.COM...");
+            writeLog("Starting Jetpack...");
 
-            return main(["-c", "COMMAND.COM"]);
+            return main(["-c", "JETPACK.EXE"]);
 
           })
           .then((ci) => {
 
             window.dosInstance = ci;
-            writeLog("DOSBox command started.");
+            writeLog("Jetpack started.");
 
           })
           .catch((error) => {
