@@ -3,20 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Jetpack Christmas</title>
-
-  <!-- Verified CDNJS js-dos v6 Release -->
   <script src="js-dos.js"></script>
-
   <style>
-    * {
-      box-sizing: border-box;
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      user-select: none;
-    }
     body, html {
       margin: 0;
       padding: 0;
@@ -24,99 +13,10 @@
       height: 100vh;
       background-color: #000;
       overflow: hidden;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
-
     #game-container {
       width: 100vw;
       height: 100vh;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 1;
-    }
-
-    /* Touch Controls Overlay */
-    #touch-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 10;
-      pointer-events: none;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      padding: 20px;
-    }
-
-    .control-group {
-      pointer-events: auto;
-      display: flex;
-      gap: 10px;
-    }
-
-    .btn {
-      background: rgba(255, 255, 255, 0.25);
-      border: 2px solid rgba(255, 255, 255, 0.5);
-      color: #fff;
-      font-weight: bold;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-      touch-action: manipulation;
-    }
-    .btn:active {
-      background: rgba(255, 0, 0, 0.6);
-      transform: scale(0.95);
-    }
-
-    /* D-PAD */
-    .dpad {
-      display: grid;
-      grid-template-columns: repeat(3, 55px);
-      grid-template-rows: repeat(3, 55px);
-      gap: 5px;
-    }
-    .dpad .btn {
-      border-radius: 12px;
-      font-size: 20px;
-    }
-    .dpad-up    { grid-column: 2; grid-row: 1; }
-    .dpad-left  { grid-column: 1; grid-row: 2; }
-    .dpad-right { grid-column: 3; grid-row: 2; }
-    .dpad-down  { grid-column: 2; grid-row: 3; }
-
-    /* Actions */
-    .actions {
-      display: flex;
-      gap: 15px;
-      align-items: flex-end;
-      margin-bottom: 10px;
-    }
-    .btn-action {
-      width: 70px;
-      height: 70px;
-      font-size: 16px;
-    }
-    .btn-jetpack {
-      background: rgba(255, 50, 50, 0.4);
-      width: 85px;
-      height: 85px;
-      font-size: 18px;
-    }
-    .btn-start {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 75px;
-      height: 45px;
-      border-radius: 8px;
-      font-size: 14px;
-      background: rgba(0, 180, 0, 0.6);
     }
   </style>
 </head>
@@ -124,76 +24,16 @@
 
   <div id="game-container"></div>
 
-  <!-- Touch Overlay -->
-  <div id="touch-overlay">
-    <div class="control-group dpad">
-      <div class="btn dpad-up" id="btn-up">▲</div>
-      <div class="btn dpad-left" id="btn-left">◀</div>
-      <div class="btn dpad-right" id="btn-right">▶</div>
-      <div class="btn dpad-down" id="btn-down">▼</div>
-    </div>
-
-    <div class="control-group actions">
-      <div class="btn btn-action" id="btn-phase">Phase</div>
-      <div class="btn btn-action btn-jetpack" id="btn-jetpack">JET</div>
-    </div>
-
-    <div class="btn btn-start" id="btn-start">START</div>
-  </div>
-
   <script>
     let dosInstance = null;
 
-    // Explicitly set wdosboxUrl to point to the CDNJS WASM build
-    Dos.wdosboxUrl = "https://cdnjs.cloudflare.com/ajax/libs/js-dos/6.22.60/wdosbox.js";
-
-    const KEYS = {
-      UP: 38,
-      DOWN: 40,
-      LEFT: 37,
-      RIGHT: 39,
-      SPACE: 32,
-      S: 83,
-      ENTER: 13,
-      CTRL: 17
-    };
-
     Dos(document.getElementById("game-container"), {
-  wdosboxUrl: "wdosbox.js"
-}).ready((calculator, wdos) => {
-  calculator.run("jetpack.jsdos", "JETPACK.EXE").then((ci) => {
-    dosInstance = ci;
+      wdosboxUrl: "wdosbox.js"
+    }).ready((calculator, wdos) => {
+      calculator.run("jetpack.jsdos", "JETPACK.EXE").then((ci) => {
+        dosInstance = ci;
       });
     });
-
-    function bindTouchKey(elementId, keyCodes) {
-      const el = document.getElementById(elementId);
-      if (!el) return;
-
-      const codes = Array.isArray(keyCodes) ? keyCodes : [keyCodes];
-
-      const press = (e) => {
-        e.preventDefault();
-        if (dosInstance) codes.forEach(code => dosInstance.sendKeyEvent(code, true));
-      };
-      const release = (e) => {
-        e.preventDefault();
-        if (dosInstance) codes.forEach(code => dosInstance.sendKeyEvent(code, false));
-      };
-
-      el.addEventListener("touchstart", press, { passive: false });
-      el.addEventListener("touchend", release, { passive: false });
-      el.addEventListener("mousedown", press);
-      el.addEventListener("mouseup", release);
-    }
-
-    bindTouchKey("btn-up", KEYS.UP);
-    bindTouchKey("btn-down", KEYS.DOWN);
-    bindTouchKey("btn-left", KEYS.LEFT);
-    bindTouchKey("btn-right", KEYS.RIGHT);
-    bindTouchKey("btn-jetpack", KEYS.SPACE);
-    bindTouchKey("btn-phase", KEYS.CTRL);
-    bindTouchKey("btn-start", [KEYS.S, KEYS.ENTER]);
   </script>
 </body>
 </html>
