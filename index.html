@@ -1,4 +1,3 @@
-HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,9 +7,8 @@ HTML
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Jetpack Christmas</title>
 
-  <!-- JS-DOS v7 CDN -->
-  <link rel="stylesheet" href="https://v7.js-dos.com/build/releases/latest/js-dos/js-dos.css">
-  <script src="https://v7.js-dos.com/build/releases/latest/js-dos/js-dos.js"></script>
+  <!-- JS-DOS v6 Engine -->
+  <script src="https://js-dos.com/6.22/current/js-dos.js"></script>
 
   <style>
     * {
@@ -150,7 +148,7 @@ HTML
   <script>
     let dosInstance = null;
 
-    // DOS Scancodes
+    // DOS Keycodes
     const KEYS = {
       UP: 38,
       DOWN: 40,
@@ -162,43 +160,43 @@ HTML
       CTRL: 17    // Phase Shield
     };
 
-    emulators.pathPrefix = "https://v7.js-dos.com/build/releases/latest/js-dos/";
-    
-    Dos(document.getElementById("game-container"), { style: "none" })
-  .run("jetpack.jsdos")
-  .then((ci) => {
-    dosInstance = ci;
-  });
-
-        function bindTouchKey(elementId, keyCodes) {
-          const el = document.getElementById(elementId);
-          if (!el) return;
-
-          const codes = Array.isArray(keyCodes) ? keyCodes : [keyCodes];
-
-          const press = (e) => {
-            e.preventDefault();
-            if (dosInstance) codes.forEach(code => dosInstance.sendKeyEvent(code, true));
-          };
-          const release = (e) => {
-            e.preventDefault();
-            if (dosInstance) codes.forEach(code => dosInstance.sendKeyEvent(code, false));
-          };
-
-          el.addEventListener("touchstart", press, { passive: false });
-          el.addEventListener("touchend", release, { passive: false });
-          el.addEventListener("mousedown", press);
-          el.addEventListener("mouseup", release);
-        }
-
-        bindTouchKey("btn-up", KEYS.UP);
-        bindTouchKey("btn-down", KEYS.DOWN);
-        bindTouchKey("btn-left", KEYS.LEFT);
-        bindTouchKey("btn-right", KEYS.RIGHT);
-        bindTouchKey("btn-jetpack", KEYS.SPACE);
-        bindTouchKey("btn-phase", KEYS.CTRL);
-        bindTouchKey("btn-start", [KEYS.S, KEYS.ENTER]);
+    // JS-DOS v6 Explicit Runner
+    Dos(document.getElementById("game-container"), {
+      onFragment: (location) => {}
+    }).ready((calculator, wdos) => {
+      calculator.run("jetpack.jsdos", "JETPACK.EXE").then((ci) => {
+        dosInstance = ci;
       });
+    });
+
+    function bindTouchKey(elementId, keyCodes) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+
+      const codes = Array.isArray(keyCodes) ? keyCodes : [keyCodes];
+
+      const press = (e) => {
+        e.preventDefault();
+        if (dosInstance) codes.forEach(code => dosInstance.sendKeyEvent(code, true));
+      };
+      const release = (e) => {
+        e.preventDefault();
+        if (dosInstance) codes.forEach(code => dosInstance.sendKeyEvent(code, false));
+      };
+
+      el.addEventListener("touchstart", press, { passive: false });
+      el.addEventListener("touchend", release, { passive: false });
+      el.addEventListener("mousedown", press);
+      el.addEventListener("mouseup", release);
+    }
+
+    bindTouchKey("btn-up", KEYS.UP);
+    bindTouchKey("btn-down", KEYS.DOWN);
+    bindTouchKey("btn-left", KEYS.LEFT);
+    bindTouchKey("btn-right", KEYS.RIGHT);
+    bindTouchKey("btn-jetpack", KEYS.SPACE);
+    bindTouchKey("btn-phase", KEYS.CTRL);
+    bindTouchKey("btn-start", [KEYS.S, KEYS.ENTER]);
   </script>
 </body>
 </html>
