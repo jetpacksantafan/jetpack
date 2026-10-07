@@ -7,9 +7,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Jetpack Christmas</title>
 
-  <!-- Local Engine Files -->
-  <link rel="stylesheet" href="js-dos.css">
-  <script src="js-dos.js"></script>
+  <!-- Verified CDNJS js-dos v6 Release -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-dos/6.22.60/js-dos.js"></script>
 
   <style>
     * {
@@ -145,41 +144,27 @@
   <script>
     let dosInstance = null;
 
-    // Tells js-dos to use the local wdosbox.js file inside your repo
-    Dos.wdosboxUrl = "wdosbox.js";
+    // Explicitly set wdosboxUrl to point to the CDNJS WASM build
+    Dos.wdosboxUrl = "https://cdnjs.cloudflare.com/ajax/libs/js-dos/6.22.60/wdosbox.js";
 
     const KEYS = {
       UP: 38,
       DOWN: 40,
       LEFT: 37,
       RIGHT: 39,
-      SPACE: 32,  // Jetpack
-      S: 83,      // "S" Key (Start)
-      ENTER: 13,  // Enter Key
-      CTRL: 17    // Phase Shield
+      SPACE: 32,
+      S: 83,
+      ENTER: 13,
+      CTRL: 17
     };
 
-    // Load game archive directly as in-memory blob
-    fetch("jetpack.jsdos")
-      .then(response => {
-        if (!response.ok) throw new Error("HTTP " + response.status + " - File missing");
-        return response.arrayBuffer();
-      })
-      .then(buffer => {
-        const blob = new Blob([buffer], { type: "application/octet-stream" });
-        const localBlobUrl = URL.createObjectURL(blob);
-
-        Dos(document.getElementById("game-container"), {
-          onFragment: (location) => {}
-        }).ready((calculator, wdos) => {
-          calculator.run(localBlobUrl, "JETPACK.EXE").then((ci) => {
-            dosInstance = ci;
-          });
-        });
-      })
-      .catch(err => {
-        alert("Launch Error: " + err.message);
+    Dos(document.getElementById("game-container"), {
+      wdosboxUrl: "https://cdnjs.cloudflare.com/ajax/libs/js-dos/6.22.60/wdosbox.js"
+    }).ready((calculator, wdos) => {
+      calculator.run("jetpack.jsdos", "JETPACK.EXE").then((ci) => {
+        dosInstance = ci;
       });
+    });
 
     function bindTouchKey(elementId, keyCodes) {
       const el = document.getElementById(elementId);
